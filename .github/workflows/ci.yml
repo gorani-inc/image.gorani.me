@@ -11,7 +11,7 @@ permissions:
 jobs:
   test:
     # 공개 PR은 사설망/운영 키에 접근할 수 없는 GitHub-hosted 장비에서만 실행한다.
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 15
     strategy:
       fail-fast: false
@@ -33,3 +33,15 @@ jobs:
           python -m pip check
           python -m unittest discover -s tests -v
           for script in scripts/*.sh; do /bin/zsh -n "$script"; done
+
+  lint:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+      - name: Python 및 셸 구문 검사
+        run: |
+          python3 -m compileall -q upload_service scripts tests
+          for script in scripts/*.sh; do /bin/zsh -n "$script"; done
+          git diff --check HEAD
