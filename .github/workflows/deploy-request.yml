@@ -12,7 +12,7 @@ jobs:
   notify:
     # main push CI가 끝난 다음에만 알린다. PR 코드/아티팩트는 읽거나 실행하지 않는다.
     if: >-
-      github.repository == 'swift-man/image.gorani.me' &&
+      github.repository == 'gorani-inc/image.gorani.me' &&
       github.event.workflow_run.event == 'push' &&
       github.event.workflow_run.head_repository.full_name == github.repository &&
       github.event.workflow_run.conclusion == 'success'

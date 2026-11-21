@@ -103,7 +103,7 @@
 ### 1. 저장소 받기
 
 ```bash
-git clone https://github.com/swift-man/image.gorani.me.git
+git clone https://github.com/gorani-inc/image.gorani.me.git
 cd image.gorani.me
 python3.11 -m venv .venv
 .venv/bin/python -m pip install --require-hashes --only-binary=:all: -r requirements-deploy.txt
