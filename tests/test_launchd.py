@@ -95,14 +95,29 @@ class LaunchAgentAssetTests(unittest.TestCase):
             installer,
         )
 
-    def test_supervisor_backs_off_finder_mount_requests(self) -> None:
-        supervisor = (PROJECT_ROOT / "scripts" / "supervise-service.sh").read_text(
-            encoding="utf-8"
+    @unittest.skipUnless(sys.platform == "darwin", "LaunchAgent is macOS-only")
+    def test_supervisor_requests_one_mount_per_disconnect(self) -> None:
+        supervisor = (PROJECT_ROOT / "scripts" / "supervise-service.sh").read_text()
+        wait_function = supervisor.split("wait_for_storage() {", 1)[1].split("\n}", 1)[0]
+        script = "wait_for_storage() {" + wait_function + "\n}"
+        script = script.replace("/usr/bin/open", "request_mount").replace("/bin/sleep", ":")
+        result = subprocess.run(
+            ["zsh", "-c", script + """
+retry_seconds=1
+smb_url=test
+log() { :; }
+is_storage_ready() { (( ++checks >= 5 )); }
+is_smb_host_ready() { return 0; }
+request_mount() { (( ++requests )); }
+requests=0
+for outage in 1 2; do
+  checks=0
+  wait_for_storage
+done
+print "$requests"
+"""], capture_output=True, text=True, check=True, timeout=5,
         )
-
-        self.assertIn('mount_retry_max_seconds="${GORANI_MOUNT_RETRY_MAX_SECONDS:-300}"', supervisor)
-        self.assertIn('/usr/bin/open -g "${smb_url}"', supervisor)
-        self.assertIn("mount_retry_seconds=$((mount_retry_seconds * 2))", supervisor)
+        self.assertEqual(result.stdout.strip(), "2")
 
     def test_app_declares_network_volume_usage(self) -> None:
         info_path = PROJECT_ROOT / "launchd" / "GoraniImageUpload-Info.plist"
