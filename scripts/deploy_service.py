@@ -28,8 +28,8 @@ import tempfile
 import time
 import urllib.request
 
-SOURCE = "https://github.com/swift-man/image.gorani.me.git"
-API = "https://api.github.com/repos/swift-man/image.gorani.me"
+SOURCE = "https://github.com/gorani-inc/image.gorani.me.git"
+API = "https://api.github.com/repos/gorani-inc/image.gorani.me"
 LABEL = "me.gorani.image-upload"
 DEFAULT_ROOT = Path.home() / "Library/Application Support/gorani-image-upload/deploy"
 # 자동 적용 중에는 DB 마이그레이션과 네이티브 앱 교체를 하지 않는다.
