@@ -11,7 +11,7 @@ permissions:
 jobs:
   test:
     # 공개 PR은 사설망/운영 키에 접근할 수 없는 GitHub-hosted 장비에서만 실행한다.
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 15
     strategy:
       fail-fast: false
